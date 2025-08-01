@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %} Register {% endblock %}
+{% block content %}
+
+<style>
+    *{
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+    body{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+    }
+    form{
+        max-width: 400px;
+        aspect-ratio: 1/1;
+        width: 100%;
+        background-color: azure;
+        border-radius: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    .box{
+        width: 100%;
+        max-width: 300px;
+        aspect-ratio: 7/1;
+        border-radius: 30px;
+        border: solid green 1px;
+        background-color: rgb(213, 248, 248);
+        padding: 20px;
+    }
+</style>
+
+
+    <form method="post">
+        <p>Register for exams</p><br>
+        <label for="Admission">Admission number</label>
+        <input type="text" name="Admission" placeholder="enter correct admission number"class="box"><br>
+        <label for="Course ">Course number</label>
+        <input type="text" name="Course" placeholder="enter correct course number"class="box"><br>
+        <label for="Unit">Unit number</label>
+        <input type="text" name="Unit" placeholder="enter correct Unit number"class="box"><br>
+        <button type="submit">Register</button>
+    </form>
+    
+    {% endblock %}
