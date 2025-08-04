@@ -7,7 +7,7 @@ app.secret_key = "2480"
 
 @app.route('/')
 def home():
-    return redirect(url_for('login'))
+    return redirect(url_for('register'))
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -18,27 +18,46 @@ def register():
         Unit = request.form['Unit']
 
         db = SessionLocal()
-
-        existing_user = db.query(Students).filter_by(Admission=Admission).first()
-
-        if existing_user:
-            error = 'User already exists'
-        else:
-            new_user = Students(Admission=Admission, Course=Course, Unit=Unit)
-            db.add(new_user)
-            db.commit()
+        try:
+            existing_user = db.query(Students).filter_by(Admission=Admission).first()
+            if existing_user:
+                error = 'User already exists'
+            else:
+                new_user = Students(Admission=Admission, Course=Course, Unit=Unit)
+                db.add(new_user)
+                db.commit()
+                return redirect(url_for('login'))
+        finally:
             db.close()
-            return redirect(url_for('login'))
-
-        db.close()
 
     return render_template('register.html', error=error)
 
-@app.route('/login')
+@app.route('/login', methods=['GET', 'POST'])
 def login():
-    return render_template('login.html')
+    error = None
+    if request.method == 'POST':
+        Admission = request.form['Admission']
+        Unit = request.form['Unit']
 
+        db = SessionLocal()
+        try:
+            user = db.query(Students).filter_by(Admission=Admission).first()
+            if user and user.Unit == Unit:
+                session['Admission'] = user.Admission
+                session['user_id'] = user.id
+                return redirect(url_for('dashboard'))
+            else:
+                error = 'Invalid credentials'
+        finally:
+            db.close()
 
+    return render_template('login.html', error=error)
 
-if __name__=="__main__":
+@app.route('/dashboard')
+def dashboard():
+    if 'Admission' not in session:
+        return redirect(url_for('login'))
+    return f"Welcome, {session['Admission']}!"
+
+if __name__ == "__main__":
     app.run(debug=True)
